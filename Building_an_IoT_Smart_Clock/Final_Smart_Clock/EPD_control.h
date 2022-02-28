@@ -2,14 +2,6 @@
 #define EPD_CONTROL_H
 #include <Arduino.h>
 
-// Declare the required global variables
-uint8_t *framebuffer;
-String  Time_str = "--:--:--";
-String  Date_str = "-- --- ----";
-float main_temp = 0;
-float main_pressure = 0;
-int main_humidity = 0;
-
 enum alignment {LEFT, RIGHT, CENTER}; // Define new data type for text alignment
 
 #include "epd_driver.h" //e-paper display driver
@@ -18,6 +10,7 @@ enum alignment {LEFT, RIGHT, CENTER}; // Define new data type for text alignment
 // Include the font header files
 #include "time24.h"
 #include "time72.h"
+#include "opensans18b.h"
 
 // Include the image to be displayed
 #include "dnd.h"
@@ -26,5 +19,15 @@ enum alignment {LEFT, RIGHT, CENTER}; // Define new data type for text alignment
 #include "hum.h"
 #include "pres.h"
 #include "temp.h"
+
+//Function prototypes
+void EPD_setup();
+boolean getLocalTime();
+void displayDateTime();
+void displayDND();
+void displayGraphic();
+void displayWelcomeImage();
+void drawString(const GFXfont *font, int x, int y, String text, alignment align);
+
 
 #endif

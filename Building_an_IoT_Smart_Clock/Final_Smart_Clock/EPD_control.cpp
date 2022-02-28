@@ -1,5 +1,9 @@
 #include "EPD_control.h"
 
+// Declare the required global variables
+uint8_t *framebuffer;
+String  Time_str = "--:--:--";
+String  Date_str = "-- --- ----";
 /*********************************************************************
   Function to set buffer memory and initialize E-Paper Display
  ********************************************************************/
@@ -22,8 +26,7 @@ void EPD_setup() {
 /*********************************************************************
    Function to get the time/date data and store it in a global variable
  ********************************************************************/
-boolean getLocalTime()
-{
+boolean getLocalTime(){
   struct tm timeinfo;
   char   time_output[30], day_output[30], update_time[30];
 
@@ -46,74 +49,6 @@ boolean getLocalTime()
 }
 
 /*********************************************************************
-    Function to get the weather data
- ********************************************************************/
-void getWeatherData() {
-  if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
-    HTTPClient http;
-    String payload;
-
-    // specify request destination
-    Serial.print("[HTTP] begin...\n");
-    if (http.begin(client, "http://api.openweathermap.org/data/2.5/weather?q=" + Location + "&APPID=" + API_Key))    // HTTP
-    {
-
-      Serial.print("[HTTP] GET...\n");
-      // start connection and send HTTP header
-      int httpCode = http.GET();
-
-      // httpCode will be negative on error
-      if (httpCode > 0) // check the returning code
-      {
-        // HTTP header has been send and Server response header has been handled
-        Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-
-        // file found at server
-        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY)
-        {
-          payload = http.getString();
-          Serial.println(payload);
-        }
-      }
-      else
-      {
-        Serial.printf("[HTTP] GET... failed, error: %s\n",
-                      http.errorToString(httpCode).c_str());
-        return;
-      }
-
-      StaticJsonDocument<1024> doc;
-
-      DeserializationError error = deserializeJson(doc, payload);
-
-      if (error)
-      {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(error.f_str());
-        return;
-      }
-
-      JsonObject main = doc["main"];
-      main_temp = main["temp"]; // 301.45
-      main_pressure = main["pressure"]; // 1004
-      main_humidity = main["humidity"]; // 62
-
-      // print data
-      Serial.printf("Temperature = %.2f°C\r\n", main_temp);
-      Serial.printf("Humidity = %d %%\r\n", main_humidity);
-      Serial.printf("Pressure = %.3f bar\r\n", main_pressure);
-    }
-    else
-    {
-      Serial.println("[HTTP] .begin() failed");
-    }
-
-    http.end(); //Close connection
-  }
-}
-
-/*********************************************************************
    Function to show the the image on E-Paper display
  *********************************************************************/
 void displayDateTime() {
@@ -124,45 +59,17 @@ void displayDateTime() {
   String Phase = Time_str.substring(8);
 
   // Define the cursor variable and default location
-  int cursor_x = 500;
+  int cursor_x = 550;
   int cursor_y = 40;
   drawString((GFXfont *)&time72, cursor_x, cursor_y, Time, LEFT);
 
-  cursor_x = 790;
+  cursor_x = 840;
   cursor_y = 100;
   drawString((GFXfont *)&time24, cursor_x, cursor_y, Phase, LEFT);
-  
-  cursor_x = 500;
+
+  cursor_x = 550;
   cursor_y = 180;
   drawString((GFXfont *)&time24, cursor_x, cursor_y, Date_str, LEFT);
-}
-
-/*********************************************************************
-   Function to show the the image on E-Paper display
- *********************************************************************/
-void displayWeather() {
-  getWeatherData(); // Get the current weather information
-  
-  // Define the cursor variable and default location
-  int cursor_x = 0;
-  int cursor_y = 0;
-
-  String temp = "Temperature : " + String((main_temp - 273.15)) + " °C";
-  String hum = "Humidity : " + String(main_humidity) + " %";
-  String pres = "Pressure : " + String(main_pressure) + " hPa";
-
-  // Display text on the E-Paper Display
-  cursor_x = 200;
-  cursor_y = 100;
-  drawString((GFXfont *)&OpenSans24B, cursor_x, cursor_y, temp, LEFT);
-
-  cursor_x = 200;
-  cursor_y += 100;
-  drawString((GFXfont *)&OpenSans24B, cursor_x, cursor_y, hum, LEFT);
-
-  cursor_x = 200;
-  cursor_y += 100;
-  drawString((GFXfont *)&OpenSans24B, cursor_x, cursor_y, pres, LEFT);
 }
 
 /*********************************************************************
@@ -177,6 +84,13 @@ void displayDND() {
     .height = dnd_height,
   };
 
+  Rect_t area1 = {
+    .x = 10,
+    .y = 40,
+    .width = graphic2_width,
+    .height = graphic2_height,
+  };
+  epd_clear_area(area1);
   epd_draw_grayscale_image(area, (uint8_t *)dnd_data); //Draw DND image
   delay(100);
 }
@@ -187,8 +101,8 @@ void displayDND() {
 void displayGraphic() {
   // Set the position and area of the image
   Rect_t area = {
-    .x = 50,
-    .y = 30,
+    .x = 10,
+    .y = 40,
     .width = graphic2_width,
     .height = graphic2_height,
   };
