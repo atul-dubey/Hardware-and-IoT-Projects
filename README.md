@@ -1,2 +1,2 @@
-# Arduino Projects
-This repository contains the sample projects relates to Arduino. Feel free to clone, use, alter and play with them as you wish.
+# Hardware and IoT Projects
+This repository contains the projects relates to Hardware and IoT. Feel free to clone, use, alter and play with them as you wish.
