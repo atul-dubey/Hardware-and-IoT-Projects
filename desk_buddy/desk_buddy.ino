@@ -21,16 +21,16 @@
 #define OLED_ADDR 0x3C
 Adafruit_SSD1306 display(-1);                              //instance for OLED library
 
-char ssid[] = "iBHubs";
-char pass[] = "Harmony@iB";
-String ori = "Hyderabad";                                   //for serial monitor use
-String dest = "Shahdol";
-String origin = "13.0234284,77.5459806,";            //origin coordinates
-String destination = "12.9757351,77.570719";      //destination coordinates
+char ssid[] = "WIFI_SSID";
+char pass[] = "WIFI_PASSWORD";
+String ori = "ORIGIN_LOCATION";                                   //for serial monitor use
+String dest = "DESTINATION_LOCATION";
+String origin = "ORIGIN_LONGITUDE, ORIGIN_LATTITUDE";            //origin coordinates
+String destination = "DESTINATION_LONGITUDE, DESTINATION_LATTITUDE";      //destination coordinates
 String responseString;
 int button_num = 0;                                      //to know which button is pressed
 
-char apiKey[45] = "AIzaSyC-dDB_deakf0whqOlWZ6IxYaVdWKq6oZQ";                  //Google Maps API Key
+char apiKey[45] = "GOOGLE MAPS API KEY";                  //Google Maps API Key
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, 12, NEO_GRB + NEO_KHZ800);                                                  // Defining RGB LED strip.
 WiFiClientSecure client;                                    //instance for client library

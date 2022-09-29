@@ -11,10 +11,10 @@
 
 
 /* Defining global variables and constants */
-char ssid[] = "YouKnowMe";                                                   // Variables to store network credentials
-char pass[] = "IKnowYou";
+char ssid[] = "YOUR_WIFI_SSID";                                                   // Variables to store network credentials
+char pass[] = "YOUR_WIFI_PASSWORD";
 char msg[50];                                                             // Varaible for storing final message to be published
-const char* mqttServer = "192.168.43.91";                                  // Address of the computer running MQTT broker
+const char* mqttServer = "MQTT_BROKER_IP_ADDRESS";                                  // Address of the computer running MQTT broker
 
 int relayPin = 4;                                                         // Variable for relay output pin
 double sensor_Vol = 0;                                                    // Variable for storing voltage on ADC pin duue to sensor
